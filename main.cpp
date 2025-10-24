@@ -62,10 +62,7 @@ int main() {
     std::cout << d7.formatLong() << "\n";
     std::cout << d7.formatDayMonthYear() << "\n";
 
-    // (Optional) demonstrate overloads:
-    // std::cout << "\nLeap (object): " << (d7.isLeapYear() ? "true" : "false") << "\n";
-    // std::cout << "Leap(2009): " << (Date::isLeapYear(2009) ? "true" : "false") << "\n";
-    // std::cout << "Last day Feb 2008: " << Date::lastDay(2, 2008) << "\n";
 
     return 0;
 }
+
