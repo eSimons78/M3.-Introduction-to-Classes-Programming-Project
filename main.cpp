@@ -1,71 +1,49 @@
 #include <iostream>
-#include "Date.h"
-
-static void printIfError(const Date& d) {
-    if (d.lastError() != Date::Error::NONE) {
-        std::cout << d.lastErrorMessage() << "\n";
-    }
-}
+#include <random>
+#include <iomanip>
+#include "NumberArray.h"
 
 int main() {
-    // Test default constructor
-    Date d0;
-    std::cout << "Test default constructor: " << d0.formatSlash() << "\n\n";
+    std::cout << "----- Test constructors -----\n\n";
 
-    // Test constructor with valid date
-    Date d1(2, 28, 2009);
-    printIfError(d1);
-    std::cout << "Test constructor with valid date: " << d1.formatSlash() << "\n\n";
+    NumberArray defArr; // default size (MAX_SIZE)
+    std::cout << "From default constructor: Array of size " << defArr.size() << "\n";
+    defArr.print();
+    std::cout << "\n";
 
-    // Test constructor with invalid month
-    Date d2(45, 2, 2009);
-    std::cout << "Test constructor with invalid month (45, 2, 2009): ";
-    printIfError(d2);
-    std::cout << d2.formatSlash() << "\n\n";
+    NumberArray arr(15);
+    std::cout << "From constructor with parameters: Array of size " << arr.size() << "\n";
+    arr.print();
+    std::cout << "\n";
 
-    // Test constructor with invalid day
-    Date d3(2, 29, 2009);
-    std::cout << "Test constructor with invalid day (2, 29, 2009): ";
-    printIfError(d3);
-    std::cout << d3.formatSlash() << "\n\n";
+    std::cout << "----- Test mutator -----\n\n";
+    std::cout << "Array filled with numbers:\n";
 
-    // Test setDate with bad month
-    Date d4;
-    std::cout << "Test setDate with bad month (13): ";
-    d4.setDate(13, 1, 2009);
-    printIfError(d4);
-    std::cout << d4.formatSlash() << "\n\n";
+    // Fill with reproducible random numbers in [0,100)
+    std::mt19937 rng(12345u);
+    std::uniform_real_distribution<double> dist(0.0, 100.0);
+    for (int i = 0; i < arr.size(); ++i) {
+        // store raw double; print uses 1-decimal precision
+        arr.setNumber(i, dist(rng));
+    }
+    arr.print();
+    std::cout << "\n";
 
-    // Test setDate with bad day
-    Date d5;
-    std::cout << "Test setDate with bad day (4, 31, 2009): ";
-    d5.setDate(4, 31, 2009);
-    printIfError(d5);
-    std::cout << d5.formatSlash() << "\n\n";
+    std::cout << "Trying to set a number with an out of bounds index (20):\n";
+    arr.setNumber(20, 123.4); // oob for size 15
+    std::cout << "\n";
 
-    // Test for leap year with bad date (should fail and default)
-    Date d6;
-    std::cout << "Test for leap year with bad date (2/29/2009): ";
-    d6.setDate(2, 29, 2009);
-    printIfError(d6);
-    std::cout << d6.formatSlash() << "\n\n";
+    std::cout << "----- Test accessors _____\n\n";
+    std::cout << "Access item at index 5: ";
+    std::cout << std::fixed << std::setprecision(1) << arr.getNumber(5) << "\n\n";
 
-    // Test for leap year with good date
-    Date d7;
-    std::cout << "Test for leap year with good date (2/29/2008): ";
-    d7.setDate(2, 29, 2008);
-    printIfError(d7);
-    std::cout << d7.formatSlash() << "\n\n";
+    std::cout << "Access item at index 20 (out of bounds): ";
+    std::cout << std::fixed << std::setprecision(1) << arr.getNumber(20) << "\n\n";
 
-    // Test the print formats
-    std::cout << "Test the print formats:\n";
-    std::cout << d7.formatLong() << "\n";
-    std::cout << d7.formatDayMonthYear() << "\n";
+    std::cout << "The minimum value in the array is: " << std::fixed << std::setprecision(1) << arr.min() << "\n";
+    std::cout << "The maximum value in the array is: " << std::fixed << std::setprecision(1) << arr.max() << "\n";
+    std::cout << "The average of the values in the array is: " << std::fixed << std::setprecision(1) << arr.average() << "\n";
 
-    // (Optional) demonstrate overloads:
-    // std::cout << "\nLeap (object): " << (d7.isLeapYear() ? "true" : "false") << "\n";
-    // std::cout << "Leap(2009): " << (Date::isLeapYear(2009) ? "true" : "false") << "\n";
-    // std::cout << "Last day Feb 2008: " << Date::lastDay(2, 2008) << "\n";
-
+    // Destructors will message automatically at end of scope
     return 0;
 }
